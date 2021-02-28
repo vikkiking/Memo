@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:ignore="MissingDefaultResource">
+
+    <item
+        android:id="@+id/selectAll"
+        android:enabled="true"
+        android:title="@string/selectAll" />
+    <item
+        android:id="@+id/cancelSelect"
+        android:enabled="true"
+        android:title="@string/cancelSelect" />
+    <item
+        android:id="@+id/delete"
+        android:enabled="true"
+        android:title="@string/delete" />
+</menu>

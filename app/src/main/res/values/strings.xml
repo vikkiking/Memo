@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Memo</string>
+    <string name="element_text" />
+    <string name="add">添加记事</string>
+    <string name="title">标题</string>
+    <string name="content">记事</string>
+    <string name="submit">完成</string>
+    <string name="complete">完成</string>
+    <string name="selectAll">全选</string>
+    <string name="cancelSelect">取消选择</string>
+    <string name="delete">删除</string>
+    <string name="empty">空空如也，快来添加你的第一条记事吧~</string>
+</resources>
