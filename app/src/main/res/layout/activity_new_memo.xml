@@ -15,7 +15,7 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/app_name"
+        app:title="编辑"
         tools:layout_editor_absoluteX="4dp" />
 
     <EditText
