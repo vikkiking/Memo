@@ -1,10 +1,10 @@
 package com.example.memo;
 
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,18 +12,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implements Filterable {
 
-    private Memo[] localDataSet;
-    private onItemClickListener listener;
-    private boolean multiSelectMode;
+    protected List<Memo> localDataSet;
+    protected onItemClickListener listener;
+    protected boolean multiSelectMode;
+
 
     public void setMultiSelectMode(boolean multiSelectMode) {
         this.multiSelectMode = multiSelectMode;
     }
 
     public boolean isMultiSelectMode() {
-        return multiSelectMode;
+        return this.multiSelectMode;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return null;
     }
 
     /**
@@ -50,11 +56,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
      *                by RecyclerView.
      */
     public MyAdapter(List<Memo> dataSet) {
-        localDataSet = dataSet.toArray(new Memo[0]);
+        this.localDataSet = dataSet;
     }
 
     public void setLocalDataSet(List<Memo> dataSet) {
-        localDataSet = dataSet.toArray(new Memo[0]);
+        this.localDataSet = dataSet;
+    }
+
+    public List<Memo> getLocalDataSet() {
+        return this.localDataSet;
     }
 
     // Create new views (invoked by the layout manager)
@@ -81,13 +91,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(ViewHolder viewHolder,  int position) {
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.title.setText(localDataSet[position].getTitle());
-        viewHolder.content.setText(localDataSet[position].getContent());
-        viewHolder.id=localDataSet[position].getId();
+        viewHolder.title.setText(this.localDataSet.get(position).getTitle());
+        viewHolder.content.setText(this.localDataSet.get(position).getContent());
+        viewHolder.id = this.localDataSet.get(position).getId();
         // if (!isMultiSelectMode())
         viewHolder.itemView.setBackgroundResource(R.drawable.border);
         // else viewHolder.itemView.setBackgroundResource(R.drawable.border_selected);
@@ -108,6 +118,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return localDataSet.length;
+        return this.localDataSet.size();
     }
+
+
 }

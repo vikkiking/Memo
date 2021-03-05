@@ -5,13 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -23,17 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public static MyAdapter adapter;
-    private RecyclerView recyclerView;
-    private List<Memo> data;
-    private List<Long> multiSelections = new ArrayList<>();
-    public static final String EXTRA_MESSAGE_TITLE = "com.example.memo.TITLE",
+    public MyAdapter adapter;
+    protected RecyclerView recyclerView;
+    protected List<Memo> data;
+    private String tag = "hello";
+    protected List<Long> multiSelections = new ArrayList<>();
+    public static String EXTRA_MESSAGE_TITLE = "com.example.memo.TITLE",
             EXTRA_MESSAGE_CONTENT = "com.example.memo.CONTENT",
             EXTRA_MESSAGE_ID = "com.example.memo.ID";
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -41,8 +43,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         //创建数据库
         LitePal.getDatabase();
-
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         data = LitePal.findAll(Memo.class);
         recyclerView.setLayoutManager(layoutManager);
@@ -81,7 +82,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.index_menu, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.index_menu, menu);
+        MenuItem searchButton = (MenuItem) menu.findItem(R.id.app_bar_search);
+        searchButton.setOnMenuItemClickListener(menuItem -> {
+            Intent intent = new Intent(getApplicationContext(), SearchResults.class);
+            //adapter.setLocalDataSet(new ArrayList<>());
+            startActivity(intent);
+            return true;
+        });
         return true;
     }
 
@@ -89,10 +98,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.app_bar_search:
-                Intent intent = new Intent(this, SearchResults.class);
-                startActivity(intent);
-                break;
             case R.id.selectAll:
                 //全选
                 multiSelections.clear();
@@ -119,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
                 break;
             default:
-                Toast.makeText(MainActivity.this, "Something is wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Something is wrong", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -129,19 +134,18 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     public void editMemo(int position) {
         Intent intent = new Intent(this, newMemo.class);
         String title = data.get(position).getTitle(),
                 content = data.get(position).getContent();
         intent.putExtra(EXTRA_MESSAGE_TITLE, title);
         intent.putExtra(EXTRA_MESSAGE_CONTENT, content);
-        intent.putExtra(EXTRA_MESSAGE_ID, String.valueOf(position + 1));
+        intent.putExtra(EXTRA_MESSAGE_ID, String.valueOf(data.get(position).getId()));
         startActivity(intent);
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         data = LitePal.findAll(Memo.class);
         adapter.setLocalDataSet(data);

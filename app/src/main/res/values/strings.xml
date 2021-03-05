@@ -10,4 +10,5 @@
     <string name="cancelSelect">取消选择</string>
     <string name="delete">删除</string>
     <string name="empty">空空如也，快来添加你的第一条记事吧~</string>
+    <string name="todo">TODO</string>
 </resources>

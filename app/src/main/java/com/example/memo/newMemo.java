@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,18 +29,18 @@ public class newMemo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_memo);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
         sdf.applyPattern("yyyy-MM-dd");
         Intent intent = getIntent();
         String title = intent.getStringExtra(MainActivity.EXTRA_MESSAGE_TITLE),
                 content = intent.getStringExtra(MainActivity.EXTRA_MESSAGE_CONTENT),
-                id = intent.getStringExtra(MainActivity.EXTRA_MESSAGE_ID);
+                ID = intent.getStringExtra(MainActivity.EXTRA_MESSAGE_ID);
 
-        if (id != null) {
-            this.id = Integer.parseInt(id);
-            EditText editTitle = (EditText) findViewById(R.id.editTitle),
-                    editContent = (EditText) findViewById(R.id.editContent);
+        if (ID != null) {
+            id = Long.parseLong(ID);
+            EditText editTitle = findViewById(R.id.editTitle),
+                    editContent = findViewById(R.id.editContent);
             editTitle.setText(title);
             editContent.setText(content);
         }
@@ -59,18 +57,23 @@ public class newMemo extends AppCompatActivity {
         String title = ((EditText) findViewById(R.id.editTitle)).getText().toString(),
                 content = ((EditText) findViewById(R.id.editContent)).getText().toString();
         Toast toast;
-        Log.i(tag, String.valueOf(title.equals("")));
-        Log.i(tag, String.valueOf(content.equals("")));
-        if (title.equals("") && content.equals(""))
+        if (title.equals("") && content.equals("")) {
+            if (id != -1)
+                LitePal.delete(Memo.class, id);
             toast = Toast.makeText(getApplicationContext(), "舍弃空白记事", Toast.LENGTH_SHORT);
-        else {
+        } else {
             Memo memo = new Memo();
             memo.setDate(sdf.format(new Date()));
             memo.setTitle(title);
             memo.setContent(content);
-            if (id != -1) memo.update(id);
-            else memo.save();
-            toast = Toast.makeText(getApplicationContext(), "保存成功", Toast.LENGTH_SHORT);
+            if (id != -1) {
+                memo.update(id);
+                // Log.i(tag, LitePal.find(Memo.class, id).getContent());
+                toast = Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT);
+            } else {
+                memo.save();
+                toast = Toast.makeText(getApplicationContext(), "保存成功", Toast.LENGTH_SHORT);
+            }
         }
         toast.show();
         super.onBackPressed();
